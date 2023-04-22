@@ -24,6 +24,7 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody AuthenticationRequest req
     ) {
+        System.out.println("In controller");
         return ResponseEntity.ok(authService.auth(req));
     }
 }

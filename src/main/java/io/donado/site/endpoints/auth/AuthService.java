@@ -33,19 +33,24 @@ public class AuthService {
     }
 
     public AuthenticationResponse auth(AuthenticationRequest req) {
+        System.out.println(String.format("In service before: %s %s", req.getUsername(), req.getPassword()));
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         req.getUsername(),
-                        req.getPassword())
+                        req.getPassword()
+                )
         );
+        System.out.println(String.format("In service after: %s %s", req.getUsername(), req.getPassword()));
 
         var user = userRepository.findByUsername(req.getUsername())
                 .orElseThrow(); // Throw a good one
 
         var jwtToken = jwtService.generateToken(user, user.getRole());
 
-        return AuthenticationResponse.builder()
-                .token(jwtToken).build();
+        return AuthenticationResponse
+                .builder()
+                .token(jwtToken)
+                .build();
     }
 
 }
