@@ -4,6 +4,7 @@ import io.donado.site.controllers.authentication.dto.LoginRequest;
 import io.donado.site.services.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,6 +29,7 @@ public class HomeController {
     }
 
     @GetMapping("/any")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public String any() {
         System.out.println("Hey!");
         return "nothing special";
