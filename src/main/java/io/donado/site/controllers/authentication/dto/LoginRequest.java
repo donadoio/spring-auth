@@ -1,4 +1,4 @@
-package io.donado.site.endpoints.auth;
+package io.donado.site.controllers.authentication.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
+public class LoginRequest {
     private String username;
     private String password;
 }
