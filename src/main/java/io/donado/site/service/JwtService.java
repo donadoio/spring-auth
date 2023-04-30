@@ -2,6 +2,7 @@ package io.donado.site.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +20,8 @@ public class JwtService {
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
         String scope = authentication.getAuthorities().stream()
-                .map(role -> {
-                    System.out.println(role.getAuthority());
-                    return role.getAuthority();
-                }).collect(Collectors.joining(" "));
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(" "));
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
@@ -31,6 +30,7 @@ public class JwtService {
                 .subject(authentication.getName())
                 .claim("roles", scope)
                 .build();
+
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 }

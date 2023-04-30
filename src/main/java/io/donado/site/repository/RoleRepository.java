@@ -1,12 +1,12 @@
 package io.donado.site.repository;
 
-import io.donado.site.model.SecurityUser;
+import io.donado.site.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<SecurityUser, Integer> {
-    Optional<SecurityUser> findByUsername(String username);
+public interface RoleRepository extends JpaRepository<Role, Integer> {
+    Optional<Role>  findByAuthority(String authority);
 }

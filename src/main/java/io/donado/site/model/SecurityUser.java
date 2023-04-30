@@ -3,6 +3,7 @@ package io.donado.site.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,7 +25,10 @@ public class SecurityUser implements UserDetails {
     private Integer userId;
 
 
+    @Column(unique = true)
     @Setter private String username;
+
+    @Column
     @Setter private String password;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
