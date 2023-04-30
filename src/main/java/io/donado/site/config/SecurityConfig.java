@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,6 +31,7 @@ import org.springframework.security.config.annotation.web.configurers.oauth2.ser
 
 
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -38,7 +40,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
-        var authProvider = new DaoAuthenticationProvider();
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return new ProviderManager(authProvider);
@@ -51,14 +53,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/**").permitAll();
                     auth.requestMatchers("/").permitAll();
-                    auth.requestMatchers("/auth/register").permitAll();
+                    auth.requestMatchers("/adminprotected").hasRole("ADMIN");
+                    auth.requestMatchers("/user protected").hasRole("USER");
                     auth.anyRequest().authenticated();
                 });
                 http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
                 http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-                http.exceptionHandling((ex) -> ex
-                .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-                .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
                 return http.build();
     }
 
