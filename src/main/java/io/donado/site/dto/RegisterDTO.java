@@ -10,7 +10,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticateDTO {
+public class RegisterDTO {
+
+    @NotEmpty
+    @NotBlank
+    @Email
+    private String email;
     @NotEmpty
     @NotBlank
     @Pattern(

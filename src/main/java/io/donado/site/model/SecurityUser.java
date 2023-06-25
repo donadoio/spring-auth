@@ -24,12 +24,20 @@ public class SecurityUser implements UserDetails {
     @Getter @Setter
     private Integer userId;
 
+    @Column(unique = true)
+    @Setter private String email;
 
     @Column(unique = true)
     @Setter private String username;
 
     @Column
     @Setter private String password;
+
+    @Column(name="auth_type")
+    @Setter private String authType;
+
+    @Column(name="auth_type_id")
+    @Getter @Setter private Integer authTypeId;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="user_role_junction",
@@ -38,9 +46,24 @@ public class SecurityUser implements UserDetails {
     )
     private Set<Role> authorities;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name="user_session_junction",
+            joinColumns = {@JoinColumn(name="user_id")},
+            inverseJoinColumns = {@JoinColumn(name="session_id")}
+    )
+    @Getter
+    @Setter
+    private Set<Session> sessions;
+
     public SecurityUser() {
         super();
         this.authorities = new HashSet<Role>();
+        this.sessions = new HashSet<Session>();
+    }
+
+    public String getEmail() {
+        return this.email;
     }
 
     @Override

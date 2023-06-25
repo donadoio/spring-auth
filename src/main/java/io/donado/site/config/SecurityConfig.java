@@ -9,10 +9,10 @@ import com.nimbusds.jose.proc.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,9 +29,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 
 @Configuration
-@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -52,15 +53,36 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/**").permitAll();
-                    auth.requestMatchers("/").permitAll();
-                    auth.requestMatchers("/adminprotected").hasRole("ADMIN");
-                    auth.requestMatchers("/user protected").hasRole("USER");
+                    //auth.requestMatchers("/").permitAll();
+                    auth.requestMatchers("/auth/register").permitAll();
                     auth.anyRequest().authenticated();
                 });
-                http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
-                http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-                return http.build();
+        //http.oauth2Login(withDefaults());
+        http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+        //http.oauth2ResourceServer().jwt();
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.exceptionHandling((ex) -> ex
+                .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+                .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
+        );
+        return http.build();
     }
+
+    // todo Another security filterChain
+//    @Bean
+//    @Order(2)
+//    public SecurityFilterChain oAuthConfigure (HttpSecurity http) throws Exception {
+//        http
+//                .csrf(csrf -> csrf.disable())
+//                .authorizeHttpRequests(auth -> {
+//                    auth.requestMatchers("/oauth2/code/user").authenticated();
+//                    //auth.requestMatchers("/").permitAll();
+//                    //auth.requestMatchers("/auth/register").permitAll();
+//                    //auth.anyRequest().authenticated();
+//                });
+//        http.oauth2Login();
+//        return http.build();
+//    }
 
     @Bean
     PasswordEncoder passwordEncoder() {

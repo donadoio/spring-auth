@@ -5,20 +5,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/resource")
 public class MainController {
 
     @GetMapping
     String hello() {
-        return "Hello";
+        System.out.println("in");return "Hello";
     }
 
-    @GetMapping("/protected")
+    @GetMapping("/private/protected")
     String protect() {return "Hello";}
 
-    @GetMapping("/userprotected")
+    @GetMapping("/private/userprotected")
     String userprotect() {return "Hello";}
 
-    @GetMapping("/adminprotected")
+    @GetMapping("/private/adminprotected")
     String adminprotect() {return "Hello";}
+
+    @GetMapping("/public/notprotected")
+    String notprotect() {return "Hello";}
 }

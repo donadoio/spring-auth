@@ -2,6 +2,7 @@
 CREATE TABLE users
 (
     user_id     serial PRIMARY KEY,
+    email       VARCHAR ( 320 ) UNIQUE  NOT NULL,
     username    VARCHAR ( 50 )  UNIQUE  NOT NULL,
     password    TEXT                    NOT NULL,
     role        VARCHAR ( 50 )          NOT NULL
